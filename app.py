@@ -71,26 +71,26 @@ def show_image(image_path):
     st.image(resized, caption=os.path.basename(image_path))
 
 # Main logic
-if start_btn:
+images = get_images(category)
+timer = TIMER_MAP[timer_label]
+placeholder = st.empty()
+
+if not images:
+    st.warning("No images found.")
+elif start_btn:
     st.session_state.running = True
-    images = get_images(category)
 
-    if not images:
-        st.warning("No images found.")
-    else:
-        timer = TIMER_MAP[timer_label]
-        placeholder = st.empty()
-
-if timer is None:
-    # Manual mode
-    if "manual_image" not in st.session_state:
-        st.session_state.manual_image = random.choice(images)
+    if timer is None:
+        # Manual mode
+        if "manual_image" not in st.session_state:
+            st.session_state.manual_image = random.choice(images)
 
         if st.button("🎲 Next Image"):
             st.session_state.manual_image = random.choice(images)
-    
+
         with placeholder.container():
             show_image(st.session_state.manual_image)
+
     else:
         # Timed mode
         while st.session_state.running:
