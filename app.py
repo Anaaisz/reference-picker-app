@@ -16,7 +16,7 @@ CATEGORY_TO_FOLDER = {
     "Landscapes": "landscapes",
     "People": "people",
     "Faces": "faces",
-    "Nature": "nature"
+    "Nature": "nature",
     "Animals": "animals",
 }
 
