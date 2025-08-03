@@ -25,9 +25,15 @@ timer_label = st.sidebar.radio("Set Timer", ["No timer", "30 seconds", "60 secon
 start_btn = st.sidebar.button("Start")
 stop_btn = st.sidebar.button("Stop")
 
-# Session state to control timer
+# --- Session State Initialization ---
 if "running" not in st.session_state:
     st.session_state.running = False
+if "images" not in st.session_state:
+    st.session_state.images = []
+if "last_image" not in st.session_state:
+    st.session_state.last_image = None
+if "category" not in st.session_state:
+    st.session_state.category = None
 
 # Stop button logic
 if stop_btn:
@@ -48,6 +54,8 @@ def get_images(category):
         return images
     else:
         path = os.path.join(BASE_FOLDER, CATEGORY_TO_FOLDER[category])
+        if not os.path.isdir(path):
+            return []
         return [
             os.path.join(path, f) for f in os.listdir(path)
             if f.lower().endswith(('.png', '.jpg', '.jpeg'))
@@ -70,31 +78,42 @@ def show_image(image_path):
     resized = img.resize((new_width, max_height))
     st.image(resized, caption=os.path.basename(image_path))
 
-# Main logic
-images = get_images(category)
-timer = TIMER_MAP[timer_label]
+# Main display area
 placeholder = st.empty()
+timer = TIMER_MAP[timer_label]
 
-if not images:
-    st.warning("No images found.")
-elif start_btn:
+# --- Start Logic ---
+if start_btn:
     st.session_state.running = True
+    st.session_state.category = category
+    st.session_state.images = get_images(category)
+    st.session_state.last_image = None
 
-    if timer is None:
-        # Manual mode
-        if "manual_image" not in st.session_state:
-            st.session_state.manual_image = random.choice(images)
-
-        if st.button("🎲 Next Image"):
-            st.session_state.manual_image = random.choice(images)
-
-        with placeholder.container():
-            show_image(st.session_state.manual_image)
-
+# --- MANUAL MODE ("No timer") ---
+if st.session_state.running and timer is None:
+    if not st.session_state.images:
+        st.warning("No images found for this category.")
     else:
-        # Timed mode
-        while st.session_state.running:
-            selected = random.choice(images)
+        if st.button("🎲 Next Image"):
+            new_image = random.choice(st.session_state.images)
+            while new_image == st.session_state.last_image and len(st.session_state.images) > 1:
+                new_image = random.choice(st.session_state.images)
+            st.session_state.last_image = new_image
             with placeholder.container():
-                show_image(selected)
+                show_image(new_image)
+
+        # Show the last image even before clicking "Next"
+        elif st.session_state.last_image:
+            with placeholder.container():
+                show_image(st.session_state.last_image)
+
+# --- TIMED MODE ---
+elif st.session_state.running and timer is not None:
+    if not st.session_state.images:
+        st.warning("No images found for this category.")
+    else:
+        while st.session_state.running:
+            new_image = random.choice(st.session_state.images)
+            with placeholder.container():
+                show_image(new_image)
             time.sleep(timer)
