@@ -74,6 +74,7 @@ def show_image(image_path):
 if start_btn:
     st.session_state.running = True
     images = get_images(category)
+    st.write("Found images:", images)
 
     if not images:
         st.warning("No images found.")
