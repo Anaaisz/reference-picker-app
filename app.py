@@ -107,7 +107,7 @@ if st.session_state.running and timer is None:
             with placeholder.container():
                 show_image(st.session_state.last_image)
 
-# --- TIMED MODE ---
+# --- TIMED MODE with Countdown ---
 elif st.session_state.running and timer is not None:
     if not st.session_state.images:
         st.warning("No images found for this category.")
@@ -116,4 +116,11 @@ elif st.session_state.running and timer is not None:
             new_image = random.choice(st.session_state.images)
             with placeholder.container():
                 show_image(new_image)
-            time.sleep(timer)
+
+            # Countdown display
+            for remaining in range(timer, 0, -1):
+                if not st.session_state.running:
+                    break  # Exit early if stop button pressed
+                st.info(f"⏳ {remaining} second{'s' if remaining > 1 else ''} left...")
+                time.sleep(1)
+
