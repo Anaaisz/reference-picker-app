@@ -10,13 +10,14 @@ st.title("🎨 1, 2, Sketch!")
 
 # Image structure
 BASE_FOLDER = "images"
-CATEGORIES = ["Buildings", "Landscapes", "People", "Faces", "Nature", "Mix"]
+CATEGORIES = ["Buildings", "Landscapes", "People", "Faces", "Nature", "Animals", "Mix"]
 CATEGORY_TO_FOLDER = {
     "Buildings": "buildings",
     "Landscapes": "landscapes",
     "People": "people",
     "Faces": "faces",
     "Nature": "nature"
+    "Animals": "animals",
 }
 
 # Sidebar controls
