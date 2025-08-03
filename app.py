@@ -81,16 +81,20 @@ if start_btn:
         timer = TIMER_MAP[timer_label]
         placeholder = st.empty()
 
-        if timer is None:
-            # Manual mode
-            if st.button("🎲 Next Image"):
-                selected = random.choice(images)
-                with placeholder.container():
-                    show_image(selected)
-        else:
-            # Timed mode
-            while st.session_state.running:
-                selected = random.choice(images)
-                with placeholder.container():
-                    show_image(selected)
-                time.sleep(timer)
+if timer is None:
+    # Manual mode
+    if "manual_image" not in st.session_state:
+        st.session_state.manual_image = random.choice(images)
+
+        if st.button("🎲 Next Image"):
+            st.session_state.manual_image = random.choice(images)
+    
+        with placeholder.container():
+            show_image(st.session_state.manual_image)
+    else:
+        # Timed mode
+        while st.session_state.running:
+            selected = random.choice(images)
+            with placeholder.container():
+                show_image(selected)
+            time.sleep(timer)
