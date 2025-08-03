@@ -112,8 +112,8 @@ elif st.session_state.running and timer is not None:
     if not st.session_state.images:
         st.warning("No images found for this category.")
     else:
-        countdown_placeholder = st.empty()  # Dynamic countdown
-        image_placeholder = st.empty()      # Image display
+        countdown_sidebar = st.sidebar.empty()  # Countdown in sidebar
+        image_placeholder = st.empty()          # Image in main page
 
         while st.session_state.running:
             selected = random.choice(st.session_state.images)
@@ -123,10 +123,11 @@ elif st.session_state.running and timer is not None:
             for remaining in range(timer, 0, -1):
                 if not st.session_state.running:
                     break
-                countdown_placeholder.markdown(
-                    f"<h1 style='text-align:center; color:#444;'>{remaining}</h1>",
+                countdown_sidebar.markdown(
+                    f"<div style='text-align:center; font-size:24px; padding:10px 0;'>⏳ {remaining} sec</div>",
                     unsafe_allow_html=True
                 )
                 time.sleep(1)
+
 
 
